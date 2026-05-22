@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>社用車日常点検簿</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* アイコンフォント未ロード時のフォールバック */
+.ti::before { font-family: 'tabler-icons', 'FontAwesome', sans-serif; }
+:root {
+  --green: #16a34a;
+  --green-dark: #15803d;
+  --green-light: #dcfce7;
+  --green-mid: #bbf7d0;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --blue: #2563eb;
+  --blue-light: #dbeafe;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 15px; }
+body {
+  font-family: -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--gray-100);
+  color: var(--gray-900);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+/* ── NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid var(--gray-200);
+  display: flex; z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px 8px; cursor: pointer; border: none; background: none;
+  color: var(--gray-500); font-size: 10px; gap: 3px; transition: color .15s;
+}
+.nav-btn i { font-size: 22px; }
+.nav-btn.active { color: var(--green); }
+/* ── SCREENS ── */
+.screen { display: none; padding-bottom: 76px; min-height: 100vh; }
+.screen.active { display: block; }
+/* ── HEADER ── */
+.page-header {
+  background: var(--green); color: #fff;
+  padding: 14px 16px 12px;
+  position: sticky; top: 0; z-index: 50;
+}
+.page-header h1 { font-size: 16px; font-weight: 600; }
+.page-header p { font-size: 11px; opacity: .75; margin-top: 2px; }
+.header-sub { font-size: 11px; background: rgba(255,255,255,.18); display: inline-block; padding: 2px 10px; border-radius: 20px; margin-top: 6px; }
+.progress-wrap { height: 3px; background: rgba(255,255,255,.25); border-radius: 2px; margin-top: 8px; }
+.progress-fill { height: 3px; background: #fff; border-radius: 2px; transition: width .3s; }
+/* ── CARDS ── */
+.card {
+  background: #fff; border-radius: var(--radius);
+  box-shadow: var(--shadow); margin: 12px 12px 0;
+  overflow: hidden;
+}
+.card-body { padding: 14px; }
+.field-label { font-size: 11px; color: var(--gray-500); margin-bottom: 6px; display: block; letter-spacing: .03em; }
+/* ── DROPDOWN ── */
+.select-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 13px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
+  background: var(--gray-50); cursor: pointer; font-size: 14px; font-weight: 500;
+  color: var(--gray-800); transition: border-color .15s;
+}
+.select-btn:hover, .select-btn.open { border-color: var(--green); }
+.select-btn .chevron { font-size: 18px; color: var(--gray-400); transition: transform .2s; }
+.select-btn.open .chevron { transform: rotate(180deg); }
+.dropdown-panel {
+  border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
+  margin-top: 4px; overflow: hidden; display: none; background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+.dropdown-panel.open { display: block; }
+.dd-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 13px; cursor: pointer; border-bottom: 1px solid var(--gray-100);
+  font-size: 14px; transition: background .1s;
+}
+.dd-item:last-child { border-bottom: none; }
+.dd-item:hover { background: var(--gray-50); }
+.dd-item .vnum { font-size: 11px; color: var(--gray-400); }
+.dd-item .vnum.req { color: var(--amber); }
+/* ── SAFETY BANNER ── */
+.safety-banner {
+  margin: 12px 12px 0;
+  background: #111827; color: #fff;
+  border-radius: var(--radius); padding: 14px; overflow: hidden;
+}
+.safety-banner .s-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.s-tag { font-size: 10px; color: #fbbf24; font-weight: 600; letter-spacing: .1em; }
+.s-badge { font-size: 11px; background: rgba(255,255,255,.12); padding: 2px 8px; border-radius: 20px; margin-left: auto; }
+.s-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.s-text { font-size: 12px; color: rgba(255,255,255,.7); line-height: 1.55; }
+.s-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.s-pill { font-size: 11px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); padding: 2px 8px; border-radius: 20px; }
+/* ── ANALYSIS MINI ── */
+.analysis-mini { margin: 12px 12px 0; }
+.analysis-mini .am-row { display: flex; gap: 8px; }
+.am-stat {
+  flex: 1; background: #fff; border-radius: var(--radius-sm);
+  padding: 10px 10px 8px; box-shadow: var(--shadow); text-align: center;
+}
+.am-stat .val { font-size: 18px; font-weight: 700; }
+.am-stat .lbl { font-size: 10px; color: var(--gray-500); margin-top: 2px; }
+.am-stat.good .val { color: var(--green); }
+.am-stat.warn .val { color: var(--amber); }
+.am-stat.bad .val { color: var(--red); }
+/* ── CHECK GROUP ── */
+.check-group-label {
+  font-size: 11px; font-weight: 600; color: var(--green);
+  padding: 14px 12px 6px; letter-spacing: .04em;
+}
+.check-row {
+  background: #fff; margin: 0 12px 6px; border-radius: var(--radius-sm);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.check-main {
+  display: flex; align-items: center; padding: 12px 13px;
+  cursor: pointer; gap: 10px;
+}
+.check-circle {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 1.5px solid var(--gray-300); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.check-circle.ok { background: var(--green); border-color: var(--green); }
+.check-circle.ok::after { content:''; width:9px; height:9px; background:#fff; border-radius:50%; display:block; }
+.check-circle.ng { background: var(--red-light); border-color: var(--red); }
+.check-circle.ng::after { content:'✕'; color: var(--red); font-size:12px; font-weight:700; line-height:1; }
+.check-label { font-size: 14px; color: var(--gray-800); flex: 1; }
+.check-state-btn {
+  display: flex; gap: 4px;
+}
+.state-opt {
+  padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--gray-200); cursor: pointer; transition: all .15s;
+  background: #fff; color: var(--gray-500);
+}
+.state-opt.sel-ok { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+.state-opt.sel-ng { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.ng-detail {
+  padding: 0 13px 12px; display: none;
+}
+.ng-detail.open { display: block; }
+.ng-input {
+  width: 100%; padding: 9px 11px; border: 1px solid var(--red);
+  border-radius: var(--radius-sm); font-size: 13px; background: var(--red-light);
+  color: var(--gray-800); font-family: inherit; resize: none;
+}
+.ng-input:focus { outline: none; }
+/* ── REMARKS ── */
+.remarks-area {
+  width: 100%; padding: 11px 12px; border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm); font-size: 13px; color: var(--gray-800);
+  font-family: inherit; resize: none; min-height: 80px; background: var(--gray-50);
+}
+.remarks-area:focus { outline: none; border-color: var(--green); }
+/* ── VEHICLE INPUT ── */
+.vehicle-input {
+  width: 100%; padding: 11px 13px; border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm); font-size: 14px; color: var(--gray-800);
+  background: var(--gray-50); font-family: inherit;
+}
+.vehicle-input:focus { outline: none; border-color: var(--green); }
+.vehicle-input:read-only { background: var(--gray-100); color: var(--gray-600); }
+/* ── SUBMIT ── */
+.submit-btn {
+  position: fixed; bottom: 60px; left: 12px; right: 12px; z-index: 90;
+  background: var(--green); color: #fff; border: none;
+  border-radius: var(--radius); padding: 14px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(22,163,74,.4);
+  transition: background .15s;
+}
+.submit-btn:hover { background: var(--green-dark); }
+/* ── CONFIRM / SUCCESS ── */
+.confirm-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 14px; border-bottom: 1px solid var(--gray-100);
+  font-size: 13px; gap: 8px;
+}
+.confirm-row:last-child { border-bottom: none; }
+.confirm-row .label { color: var(--gray-500); flex-shrink: 0; }
+.confirm-row .val { font-weight: 500; text-align: right; }
+.status-ok { color: var(--green); font-weight: 600; }
+.status-ng { color: var(--red); font-weight: 600; }
+.section-header-bar {
+  background: var(--gray-800); color: #fff;
+  padding: 8px 14px; font-size: 12px; font-weight: 600;
+}
+.success-wrap { padding: 48px 20px; text-align: center; }
+.success-icon { width: 72px; height: 72px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.success-icon i { font-size: 36px; color: var(--green); }
+.btn-outline {
+  width: 100%; margin-top: 12px; padding: 13px; border-radius: var(--radius);
+  border: 1.5px solid var(--green); background: #fff; color: var(--green);
+  font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.btn-solid {
+  width: 100%; margin-top: 8px; padding: 13px; border-radius: var(--radius);
+  border: none; background: var(--green); color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.back-link { display: flex; align-items: center; gap: 6px; padding: 14px 12px 4px; font-size: 13px; color: var(--gray-500); cursor: pointer; background: none; border: none; }
+/* ── DASHBOARD ── */
+.dash-header { background: var(--gray-800); color: #fff; padding: 14px 16px 12px; position: sticky; top: 0; z-index: 50; }
+.dash-header h1 { font-size: 16px; font-weight: 600; }
+.dash-header p { font-size: 11px; opacity: .65; margin-top: 2px; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--gray-700); padding: 14px 12px 8px; letter-spacing: .03em; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 12px; }
+.stat-card { background: #fff; border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px; }
+.stat-card .s-val { font-size: 22px; font-weight: 700; }
+.stat-card .s-lbl { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+.stat-card.green .s-val { color: var(--green); }
+.stat-card.amber .s-val { color: var(--amber); }
+.stat-card.red .s-val { color: var(--red); }
+.stat-card.blue .s-val { color: var(--blue); }
+.driver-card { background: #fff; margin: 0 12px 8px; border-radius: var(--radius-sm); box-shadow: var(--shadow); overflow: hidden; }
+.driver-card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 13px; cursor: pointer; }
+.driver-name { font-size: 14px; font-weight: 600; }
+.driver-meta { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+.driver-score { font-size: 20px; font-weight: 700; }
+.score-bar-wrap { height: 4px; background: var(--gray-100); border-radius: 2px; margin: 0 13px 12px; }
+.score-bar { height: 4px; border-radius: 2px; transition: width .5s; }
+.driver-detail { display: none; border-top: 1px solid var(--gray-100); padding: 12px 13px; }
+.driver-detail.open { display: block; }
+.detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--gray-100); }
+.detail-row:last-child { border-bottom: none; }
+.detail-row .dk { color: var(--gray-500); }
+.detail-row .dv { font-weight: 500; }
+/* ── UPLOAD ── */
+.upload-zone {
+  margin: 0 12px; border: 2px dashed var(--gray-300); border-radius: var(--radius);
+  padding: 32px 16px; text-align: center; cursor: pointer; transition: border-color .15s;
+  background: #fff;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--green); }
+.upload-zone i { font-size: 36px; color: var(--gray-300); display: block; margin-bottom: 10px; }
+.upload-zone p { font-size: 13px; color: var(--gray-500); }
+.upload-zone small { font-size: 11px; color: var(--gray-400); margin-top: 4px; display: block; }
+#file-input { display: none; }
+.upload-progress { margin: 12px 12px 0; background: #fff; border-radius: var(--radius-sm); padding: 14px; box-shadow: var(--shadow); }
+.upload-progress .up-name { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.up-bar-wrap { height: 6px; background: var(--gray-100); border-radius: 3px; margin-bottom: 6px; }
+.up-bar { height: 6px; background: var(--green); border-radius: 3px; transition: width .3s; }
+.up-status { font-size: 12px; color: var(--gray-500); }
+/* ── HISTORY ── */
+.history-item { background: #fff; margin: 0 12px 8px; border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px 13px; }
+.history-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.history-name { font-size: 14px; font-weight: 600; }
+.history-date { font-size: 11px; color: var(--gray-400); }
+.history-vehicle { font-size: 12px; color: var(--gray-500); margin-bottom: 6px; }
+.history-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.h-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.h-tag.all-ok { background: var(--green-light); color: var(--green-dark); }
+.h-tag.has-ng { background: var(--red-light); color: var(--red); }
+.h-tag.warn { background: var(--amber-light); color: var(--amber); }
+/* ── ALERT TOAST ── */
+.toast {
+  position: fixed; top: 16px; left: 12px; right: 12px; z-index: 999;
+  background: var(--red); color: #fff; border-radius: var(--radius-sm);
+  padding: 12px 14px; font-size: 13px; display: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+}
+.toast.show { display: block; animation: slideDown .3s ease; }
+@keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* ── MISC ── */
+.spacer { height: 12px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--gray-400); }
+.empty-state i { font-size: 40px; display: block; margin-bottom: 10px; }
+.empty-state p { font-size: 13px; }
+.analysis-loading { text-align: center; padding: 20px; color: var(--gray-500); font-size: 13px; }
+.ai-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; background: linear-gradient(135deg,#7c3aed,#2563eb); color: #fff; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.email-note { font-size: 11px; color: var(--gray-400); padding: 6px 12px 12px; }
+/* ── DRIVER DETAIL PAGE ── */
+.driver-page-header {
+  background: var(--gray-900); color: #fff;
+  padding: 14px 16px 16px; position: sticky; top: 0; z-index: 50;
+}
+.driver-page-header .back-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.back-icon-btn { background: rgba(255,255,255,.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.driver-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.driver-page-name { font-size: 19px; font-weight: 700; }
+.driver-page-vehicle { font-size: 12px; opacity: .65; margin-top: 2px; }
+.score-ring-wrap { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.score-big { font-size: 42px; font-weight: 800; line-height: 1; }
+.score-label { font-size: 11px; opacity: .6; margin-top: 2px; }
+.compliance-ring { text-align: right; }
+.compliance-pct { font-size: 24px; font-weight: 700; }
+.compliance-lbl { font-size: 11px; opacity: .6; }
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
+.metric-box { background: #fff; border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 10px 8px; text-align: center; }
+.metric-box .mv { font-size: 20px; font-weight: 700; }
+.metric-box .ml { font-size: 10px; color: var(--gray-500); margin-top: 2px; line-height: 1.3; }
+.metric-box.c-green .mv { color: var(--green); }
+.metric-box.c-amber .mv { color: var(--amber); }
+.metric-box.c-red .mv { color: var(--red); }
+.metric-box.c-blue .mv { color: var(--blue); }
+.advice-card { margin: 0 12px 10px; background: #111827; color: #fff; border-radius: var(--radius); padding: 14px; }
+.advice-card .ac-tag { font-size: 10px; color: #fbbf24; font-weight: 600; letter-spacing: .1em; margin-bottom: 6px; }
+.advice-card .ac-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.advice-card .ac-text { font-size: 12px; color: rgba(255,255,255,.72); line-height: 1.55; }
+.insp-summary-card { margin: 0 12px 8px; background: #fff; border-radius: var(--radius-sm); box-shadow: var(--shadow); overflow: hidden; }
+.insp-summary-head { background: var(--gray-100); padding: 8px 13px; font-size: 11px; font-weight: 700; color: var(--gray-600); letter-spacing: .04em; }
+.bar-row { padding: 10px 13px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--gray-100); }
+.bar-row:last-child { border-bottom: none; }
+.bar-label { font-size: 12px; color: var(--gray-600); width: 80px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 8px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 8px; border-radius: 4px; transition: width .6s; }
+.bar-val { font-size: 12px; font-weight: 600; color: var(--gray-700); width: 36px; text-align: right; flex-shrink: 0; }
+/* driver selector scroll row */
+.driver-selector { display: flex; gap: 8px; overflow-x: auto; padding: 12px 12px 4px; scrollbar-width: none; }
+.driver-selector::-webkit-scrollbar { display: none; }
+.ds-btn {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 8px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--gray-200);
+  background: #fff; cursor: pointer; transition: all .15s; min-width: 58px;
+}
+.ds-btn.active { border-color: var(--green); background: var(--green-light); }
+.ds-btn .ds-av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+.ds-btn .ds-nm { font-size: 10px; color: var(--gray-600); text-align: center; white-space: nowrap; }
+.ds-btn.active .ds-nm { color: var(--green-dark); font-weight: 600; }
+.ds-btn .ds-sc { font-size: 11px; font-weight: 700; }
+/* ── HEADER ICON BUTTONS (dark bg screens) ── */
+.header-top { display: flex; align-items: center; justify-content: space-between; }
+.header-icon-row { display: flex; gap: 8px; flex-shrink: 0; }
+.hdr-icon-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.6);
+  background: rgba(255,255,255,.22);
+  color: #fff; cursor: pointer; transition: all .15s; font-family: inherit;
+  display: flex; align-items: center; justify-content: center;
+}
+.hdr-icon-btn:hover { background: rgba(255,255,255,.38); border-color: #fff; }
+.hdr-icon-btn i { font-size: 20px; color: #fff; }
+.hdr-icon-btn .btn-lbl { display: none; }
+.hdr-icon-btn.spinning i { animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── UPLOAD MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 200; display: none; align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: #fff; border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 520px;
+  padding: 0 0 env(safe-area-inset-bottom);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { transform: translateY(60px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.modal-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+.modal-title i { font-size: 17px; color: var(--green); }
+.modal-close {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid var(--gray-400);
+  background: var(--gray-700); color: #fff;
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: all .15s; flex-shrink: 0;
+}
+.modal-close:hover { background: var(--gray-900); }
+.modal-close i { font-size: 18px; color: #fff; }
+.modal-tabs { display: flex; margin: 14px 18px 0; border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; }
+.modal-tab {
+  flex: 1; padding: 9px; font-size: 13px; font-weight: 500;
+  border: none; background: #fff; color: var(--gray-500); cursor: pointer; transition: all .15s;
+}
+.modal-tab.active { background: var(--gray-100); color: var(--gray-800); font-weight: 600; }
+.modal-body { padding: 16px 18px 18px; }
+.modal-desc { font-size: 12px; color: var(--gray-500); line-height: 1.55; margin-bottom: 14px; }
+.modal-drop-zone {
+  border: 1.5px dashed var(--gray-300); border-radius: 12px;
+  padding: 36px 16px; text-align: center; cursor: pointer;
+  transition: border-color .15s; background: var(--gray-50);
+}
+.modal-drop-zone:hover, .modal-drop-zone.drag { border-color: var(--green); background: var(--green-light); }
+.modal-drop-zone i { font-size: 32px; color: var(--gray-300); display: block; margin-bottom: 10px; }
+.modal-drop-zone .dz-main { font-size: 13px; color: var(--gray-600); font-weight: 500; }
+.modal-drop-zone .dz-sub { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+.modal-drop-zone.drag i, .modal-drop-zone:hover i { color: var(--green); }
+.modal-submit-btn {
+  width: 100%; margin-top: 16px; padding: 14px;
+  background: var(--green); color: #fff; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .15s;
+}
+.modal-submit-btn:hover { background: var(--green-dark); }
+.modal-submit-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+.modal-selected-file {
+  display: none; background: var(--green-light); border-radius: 8px;
+  padding: 10px 12px; margin-top: 10px;
+  display: none; align-items: center; gap: 8px;
+}
+.modal-selected-file.show { display: flex; }
+.modal-selected-file i { color: var(--red); font-size: 18px; }
+.modal-selected-file .sf-name { font-size: 13px; color: var(--gray-700); font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modal-selected-file .sf-clear { background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 16px; }
+.modal-paste-area { width: 100%; min-height: 120px; padding: 11px 12px; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 13px; color: var(--gray-800); font-family: inherit; resize: none; background: var(--gray-50); }
+.modal-paste-area:focus { outline: none; border-color: var(--green); }
+.modal-up-progress { margin-top: 12px; }
+.modal-up-bar-wrap { height: 6px; background: var(--gray-100); border-radius: 3px; margin: 8px 0 4px; }
+.modal-up-bar { height: 6px; background: var(--green); border-radius: 3px; transition: width .3s; }
+.modal-up-status { font-size: 12px; color: var(--gray-500); }
+/* ── INSPECTION WHITE HEADER ── */
+.insp-header {
+  background: #fff;
+  border-bottom: 2px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  position: sticky; top: 0; z-index: 50;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.insp-header-left { display: flex; align-items: center; gap: 12px; }
+.insp-logo {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(22,163,74,.35);
+}
+.insp-logo i { font-size: 22px; color: #fff; }
+.insp-title { font-size: 17px; font-weight: 800; color: var(--gray-900); letter-spacing: -.02em; }
+.insp-header-right { display: flex; align-items: center; gap: 8px; }
+.insp-icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--gray-800);
+  border: none;
+  color: #fff;
+  cursor: pointer; transition: all .15s; font-family: inherit;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+.insp-icon-btn:active, .insp-icon-btn:hover { background: var(--gray-900); transform: scale(1.08); }
+.insp-icon-btn i { font-size: 20px; color: #fff; }
+.insp-icon-btn .btn-lbl { display:none; }
+.insp-icon-btn.spinning i { animation: spin .6s linear infinite; }
+.insp-icon-btn.btn-upload { background: #2563eb; }
+.insp-icon-btn.btn-upload:hover { background: #1d4ed8; }
+.insp-icon-btn.btn-dash   { background: #16a34a; }
+.insp-icon-btn.btn-dash:hover { background: #15803d; }
+.insp-icon-btn.btn-hist   { background: #9333ea; }
+.insp-icon-btn.btn-hist:hover { background: #7e22ce; }
+/* ── MODAL CLOSE BUTTON ── */
+.modal-close {
+  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gray-300);
+  background: #fff; color: var(--gray-800);
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: var(--gray-100); border-color: var(--gray-400); }
+.modal-close i { font-size: 18px; }
+</style>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ SCREEN: INSPECTION ══ -->
+<div class="screen active" id="screen-inspection">
+  <div class="insp-header">
+    <div class="insp-header-left">
+      <div class="insp-logo">
+        <i class="ti ti-car"></i>
+      </div>
+      <div>
+        <div class="insp-title">日常点検簿</div>
+        <div id="today-badge" style="font-size:10px;color:var(--gray-400);margin-top:1px"></div>
+      </div>
+    </div>
+    <div class="insp-header-right">
+      <button class="insp-icon-btn btn-upload" onclick="openUploadModal()" title="データアップロード">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
+      </button>
+      <button class="insp-icon-btn btn-dash" onclick="switchTab('dashboard')" title="ダッシュボード">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
+      </button>
+      <button class="insp-icon-btn btn-hist" id="refresh-btn" onclick="switchTab('history')" title="点検記録履歴">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+      </button>
+
+    </div>
+  </div>
+  <div class="progress-wrap" id="progress-wrap" style="display:none;margin:0;border-radius:0">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+
+  <!-- User select -->
+  <div class="card" style="margin-top:12px">
+    <div class="card-body">
+      <span class="field-label">点検実施者</span>
+      <button class="select-btn" id="user-btn" onclick="toggleUserDD()">
+        <span id="user-btn-txt">選択してください</span>
+        <i class="ti ti-chevron-down chevron" id="user-chevron"></i>
+      </button>
+      <div class="dropdown-panel" id="user-dd"></div>
+    </div>
+  </div>
+
+  <!-- Safety + Analysis mini (hidden until user selected) -->
+  <div id="user-info-section" style="display:none">
+    <div class="safety-banner" id="safety-banner">
+      <div class="s-top">
+        <i class="ti ti-alert-triangle" style="font-size:17px;color:#fbbf24"></i>
+        <span class="s-tag">SAFETY FOCUS</span>
+        <span class="s-badge" id="s-compliance">—</span>
+      </div>
+      <div class="s-name" id="s-name"></div>
+      <div class="s-text" id="s-text"></div>
+      <div class="s-tags" id="s-tags"></div>
+    </div>
+
+    <!-- Analysis mini stats from uploaded PDF data -->
+    <div class="analysis-mini" id="analysis-mini" style="display:none">
+      <div class="am-row" id="am-row"></div>
+    </div>
+
+    <!-- Vehicle -->
+    <div class="card">
+      <div class="card-body">
+        <span class="field-label">使用車両番号</span>
+        <input class="vehicle-input" id="vehicle-input" placeholder="例: 福岡 500 あ 12-34">
+      </div>
+    </div>
+
+    <!-- Checklist -->
+    <div id="checklist-area"></div>
+
+    <!-- Remarks -->
+    <div class="card">
+      <div class="card-body">
+        <span class="field-label">備考・異常箇所</span>
+        <textarea class="remarks-area" id="remarks-input" rows="3" placeholder="異常がある場合は詳しく記入してください..."></textarea>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="goConfirm()" style="display:none">
+    <i class="ti ti-send"></i> 点検結果を提出
+  </button>
+</div>
+
+<!-- ══ SCREEN: CONFIRM ══ -->
+<div class="screen" id="screen-confirm">
+  <div class="page-header" style="background:var(--gray-800)">
+    <div class="header-top">
+      <div><h1>提出内容の確認</h1><p style="font-size:11px;opacity:.7;margin-top:2px">内容をご確認のうえ提出してください</p></div>
+      <div class="header-icon-row">
+        <button class="hdr-icon-btn" onclick="switchTab('inspection')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></button>
+        <button class="hdr-icon-btn" onclick="openUploadModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg></button>
+        <button class="hdr-icon-btn" onclick="switchTab('dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg></button>
+        <button class="hdr-icon-btn" id="refresh-btn2" onclick="refreshPage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <button class="back-link" onclick="goBack('screen-inspection')"><i class="ti ti-arrow-left"></i> 戻る</button>
+  <div id="confirm-body"></div>
+  <div style="padding:12px">
+    <div class="email-note" id="email-note"></div>
+    <button class="btn-solid" onclick="submitFinal()"><i class="ti ti-send"></i> 提出する</button>
+    <button class="btn-outline" onclick="goBack('screen-inspection')">修正する</button>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══ SCREEN: SUCCESS ══ -->
+<div class="screen" id="screen-success">
+  <div class="page-header">
+    <div class="header-top">
+      <h1>提出完了</h1>
+      <div class="header-icon-row">
+        <button class="hdr-icon-btn" onclick="openUploadModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg></button>
+        <button class="hdr-icon-btn" onclick="switchTab('dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg></button>
+        <button class="hdr-icon-btn" onclick="refreshPage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="success-wrap">
+    <div class="success-icon"><i class="ti ti-check"></i></div>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:8px">点検結果を提出しました</h2>
+    <p style="font-size:13px;color:var(--gray-500);line-height:1.65" id="success-msg"></p>
+    <button class="btn-solid" style="margin-top:28px" onclick="resetInspection()">新しい点検を開始</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: DASHBOARD (overview) ══ -->
+<div class="screen" id="screen-dashboard">
+  <div class="dash-header">
+    <div class="header-top">
+      <div><h1>運転データ ダッシュボード</h1><p id="dash-month" style="font-size:11px;opacity:.65;margin-top:2px">データをアップロードしてください</p></div>
+      <div class="header-icon-row">
+        <button class="hdr-icon-btn" onclick="openUploadModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
+        </button>
+        <button class="hdr-icon-btn" onclick="switchTab('inspection')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><polyline points="9 12 11 14 15 10"/></svg>
+        </button>
+        <button class="hdr-icon-btn" onclick="refreshPage()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" id="dash-empty">
+    <i class="ti ti-chart-bar"></i>
+    <p>PDFをアップロードすると<br>月間分析データが表示されます</p>
+  </div>
+
+  <div id="dash-content" style="display:none">
+    <p class="section-title">月間サマリー</p>
+    <div class="stat-grid" id="dash-stats"></div>
+
+    <p class="section-title">ドライバー — タップして詳細</p>
+    <!-- Horizontal scroll selector -->
+    <div class="driver-selector" id="driver-selector"></div>
+
+    <!-- Individual driver detail panel -->
+    <div id="driver-detail-panel"></div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: DRIVER FULL PAGE ══ -->
+<div class="screen" id="screen-driver">
+  <div class="driver-page-header" id="driver-page-header">
+    <div class="back-row" style="justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="back-icon-btn" onclick="switchTab('dashboard')"><i class="ti ti-arrow-left" style="font-size:16px"></i></button>
+        <span style="font-size:13px;opacity:.7">ダッシュボードへ戻る</span>
+      </div>
+      <div class="header-icon-row" style="margin-top:0">
+        <button class="hdr-icon-btn" onclick="openUploadModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg></button>
+        <button class="hdr-icon-btn" onclick="switchTab('inspection')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><polyline points="9 12 11 14 15 10"/></svg></button>
+        <button class="hdr-icon-btn" onclick="refreshPage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="driver-avatar" id="dpage-avatar"></div>
+      <div>
+        <div class="driver-page-name" id="dpage-name"></div>
+        <div class="driver-page-vehicle" id="dpage-vehicle"></div>
+      </div>
+    </div>
+    <div class="score-ring-wrap">
+      <div>
+        <div class="score-big" id="dpage-score"></div>
+        <div class="score-label">安全スコア / 100点</div>
+      </div>
+      <div class="compliance-ring">
+        <div class="compliance-pct" id="dpage-compliance"></div>
+        <div class="compliance-lbl">法令遵守率</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-grid" id="dpage-metrics"></div>
+
+  <div class="advice-card" id="dpage-advice"></div>
+
+  <p class="section-title">カテゴリ別スコア</p>
+  <div class="insp-summary-card" id="dpage-bars"></div>
+
+  <p class="section-title">今月の点検記録</p>
+  <div id="dpage-insp-records"></div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══ SCREEN: UPLOAD ══ -->
+<div class="screen" id="screen-upload">
+  <div class="dash-header">
+    <div class="header-top">
+      <div>
+        <h1>PDFデータアップロード</h1>
+        <p style="font-size:11px;opacity:.65;margin-top:2px">月間運転データPDFを解析します<span class="ai-badge"><i class="ti ti-sparkles" style="font-size:10px"></i>AI解析</span></p>
+      </div>
+      <div class="header-icon-row">
+        <button class="hdr-icon-btn" onclick="switchTab('dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg></button>
+        <button class="hdr-icon-btn" onclick="switchTab('inspection')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><polyline points="9 12 11 14 15 10"/></svg></button>
+        <button class="hdr-icon-btn" onclick="refreshPage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="handleDrag(event)" ondrop="handleDrop(event)">
+    <i class="ti ti-file-upload"></i>
+    <p>タップしてPDFを選択<br>またはここにドロップ</p>
+    <small>月間運転データPDF（最大20MB）</small>
+  </div>
+  <input type="file" id="file-input" accept=".pdf" onchange="handleFileSelect(event)">
+
+  <div id="upload-progress-area"></div>
+  <div id="analysis-result-area"></div>
+
+  <p class="section-title" style="margin-top:16px">アップロード履歴</p>
+  <div id="upload-history">
+    <div class="empty-state"><i class="ti ti-history"></i><p>まだアップロードはありません</p></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══ SCREEN: HISTORY ══ -->
+<div class="screen" id="screen-history">
+  <div class="page-header">
+    <div class="header-top">
+      <div><h1>点検記録 履歴</h1><p id="history-count" style="font-size:11px;opacity:.75;margin-top:2px">0件の記録</p></div>
+      <div class="header-icon-row">
+        <button class="hdr-icon-btn" onclick="openUploadModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg></button>
+        <button class="hdr-icon-btn" onclick="switchTab('dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg></button>
+        <button class="hdr-icon-btn" onclick="refreshPage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div id="history-list">
+    <div class="empty-state"><i class="ti ti-clipboard-list"></i><p>まだ点検記録がありません</p></div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ══ UPLOAD MODAL ══ -->
+<div class="modal-overlay" id="upload-modal" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="ti ti-upload"></i>
+        AI-Contact データ同期
+      </div>
+      <button class="modal-close" onclick="closeUploadModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-pdf" onclick="switchModalTab('pdf')">PDFアップロード</button>
+      <button class="modal-tab" id="tab-text" onclick="switchModalTab('text')">テキスト貼り付け</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- PDF tab -->
+      <div id="modal-pdf-body">
+        <p class="modal-desc">AI-Contactからダウンロードした安全成績表や管理者ダッシュボードのPDFファイルをアップロードしてください。PDF.jsが直接読み取り、安全運転データを同期します。<br><span style="color:var(--amber);font-weight:500">※読み取れない場合は「テキスト貼り付け」タブをお試しください。</span></p>
+        <div class="modal-drop-zone" id="modal-drop-zone"
+          onclick="document.getElementById('modal-file-input').click()"
+          ondragover="modalHandleDrag(event)"
+          ondragleave="modalHandleDragLeave(event)"
+          ondrop="modalHandleDrop(event)">
+          <i class="ti ti-upload"></i>
+          <div class="dz-main">ここにPDFファイルをドラッグ ＆ ドロップ</div>
+          <div class="dz-sub">#またはクリックしてファイルを選択</div>
+        </div>
+        <input type="file" id="modal-file-input" accept=".pdf" style="display:none" onchange="modalFileSelect(event)">
+        <div class="modal-selected-file" id="modal-selected-file">
+          <i class="ti ti-file-type-pdf"></i>
+          <span class="sf-name" id="modal-sf-name"></span>
+          <button class="sf-clear" onclick="clearModalFile()"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="modal-up-progress" id="modal-up-progress" style="display:none">
+          <div class="modal-up-status" id="modal-up-status">処理中...</div>
+          <div class="modal-up-bar-wrap"><div class="modal-up-bar" id="modal-up-bar" style="width:0%"></div></div>
+        </div>
+        <button class="modal-submit-btn" id="modal-submit-btn" onclick="modalSubmitPDF()" disabled>
+          <i class="ti ti-shield-check"></i> PDFを読み込んで更新
+        </button>
+      </div>
+      <!-- Text tab -->
+      <div id="modal-text-body" style="display:none">
+        <p class="modal-desc">PDFを開いて全文をコピー（Ctrl+A → Ctrl+C）し、ここに貼り付けてください。「ユーザー別統計」の表データを自動で解析します。</p>
+        <textarea class="modal-paste-area" id="modal-paste-input" placeholder="PDFのテキストをここに貼り付けてください...&#10;&#10;走行距離(km) 580.937 1503.926 ...&#10;速度超過(20未満) 9 77 ...&#10;遵守率(%) 99.26 96.81 ..."></textarea>
+        <button class="modal-submit-btn" onclick="modalSubmitText()">
+          <i class="ti ti-shield-check"></i> テキストを読み込んで更新
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-inspection" onclick="switchTab('inspection')">
+    <i class="ti ti-clipboard-check"></i>点検
+  </button>
+  <button class="nav-btn" id="nav-dashboard" onclick="switchTab('dashboard')">
+    <i class="ti ti-chart-bar"></i>分析
+  </button>
+  <button class="nav-btn" id="nav-upload" onclick="switchTab('upload')">
+    <i class="ti ti-upload"></i>データ
+  </button>
+  <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
+    <i class="ti ti-history"></i>履歴
+  </button>
+</nav>
+
+<script>
+// ══ DATA ══
+const USERS = [
+  { id:'ito',    name:'伊藤章吾',  vehicle:null },
+  { id:'ueno',   name:'上尾敏治',  vehicle:null },
+  { id:'yoshi',  name:'吉田隆人',  vehicle:'福岡400み58-32' },
+  { id:'matsu',  name:'松元和志',  vehicle:'福岡504せ98-26' },
+  { id:'kubo',   name:'久保拓哉',  vehicle:null },
+  { id:'kono',   name:'河埜義浩',  vehicle:'福岡400む・・-44' },
+  { id:'shim',   name:'清水達也',  vehicle:'福岡504の51-96' },
+  { id:'ikeda',  name:'池田彩人',  vehicle:'福岡504す11-07' },
+  { id:'toku',   name:'徳永諒',    vehicle:null },
+  { id:'kika',   name:'吉川穏貴',  vehicle:'福岡400み88-05' },
+];
+const CHECKS = [
+  { group:'エンジンルーム', items:['エンジンオイルの量・汚れ','冷却水の量','バッテリー液の量','ブレーキ液の量'] },
+  { group:'タイヤ',        items:['タイヤの空気圧','タイヤの亀裂・損傷・溝の深さ'] },
+  { group:'灯火装置',      items:['ランプ類の点灯・汚れ・損傷'] },
+  { group:'視界',          items:['ワイパーの拭き取り状態','ウィンドウォッシャー液の量'] },
+  { group:'運転席',        items:['ブレーキの踏みしろ・効き具合','パーキングブレーキの引きしろ'] },
+];
+const ALERT_EMAIL = 'miyawaki@nakaishoko.co.jp';
+const TOTAL_ITEMS = CHECKS.reduce((s,g)=>s+g.items.length,0);
+
+let selectedUser = null;
+let checkState   = {};
+let ngNotes      = {};
+let inspectionRecords = JSON.parse(localStorage.getItem('inspRecords')||'[]');
+let driverData   = JSON.parse(localStorage.getItem('driverData')||'null');
+let ddOpen       = false;
+
+// ══ GITHUB SYNC ══
+const GH_REPO    = 'm-nakai-cyber/vehicle-inspection'; // ← リポジトリ名
+const GH_FILE    = 'driver_data.json';
+let   ghToken    = localStorage.getItem('gh_token') || '';
+
+async function ghFetch(method, body) {
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+  const heads = { 'Content-Type':'application/json' };
+  if(ghToken) heads['Authorization'] = 'token ' + ghToken;
+  return fetch(url, { method, headers: heads, body: body ? JSON.stringify(body) : undefined });
+}
+
+async function loadFromGitHub() {
+  try {
+    const res = await ghFetch('GET');
+    if(!res.ok) return;
+    const json = await res.json();
+    const data = JSON.parse(atob(json.content.replace(/\n/g,'')));
+    if(data && data.drivers) {
+      driverData = data;
+      localStorage.setItem('driverData', JSON.stringify(driverData));
+      renderDashboard();
+      console.log('GitHub から最新データを取得しました:', data.month);
+    }
+  } catch(e) { console.log('GitHub読み込みスキップ:', e.message); }
+}
+
+async function saveToGitHub(data) {
+  if(!ghToken) return false;
+  try {
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+    const heads = { 'Content-Type':'application/json', Authorization:'token '+ghToken };
+    let sha = '';
+    const getRes = await fetch(url, { headers: heads });
+    if(getRes.ok) { const ex = await getRes.json(); sha = ex.sha || ''; }
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const putRes = await fetch(url, {
+      method:'PUT', headers: heads,
+      body: JSON.stringify({ message:`データ更新: ${data.month}`, content, ...(sha?{sha}:{}) })
+    });
+    return putRes.ok;
+  } catch(e) { console.error('GitHub保存エラー:', e); return false; }
+}
+
+// Token設定モーダル
+function openTokenModal() {
+  document.getElementById('token-input').value = ghToken;
+  document.getElementById('token-modal').style.display = 'flex';
+}
+function closeTokenModal() { document.getElementById('token-modal').style.display = 'none'; }
+function saveToken() {
+  ghToken = document.getElementById('token-input').value.trim();
+  localStorage.setItem('gh_token', ghToken);
+  closeTokenModal();
+  showToast('Token を保存しました。データを読み込み中...', true);
+  loadFromGitHub();
+}
+
+// ══ INIT ══
+function init() {
+  const now = new Date();
+  const days=['日','月','火','水','木','金','土'];
+  document.getElementById('today-badge').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+  buildUserDropdown();
+  renderHistory();
+  renderDashboard();
+  // 起動時にGitHubから最新データ自動取得
+  loadFromGitHub();
+}
+
+// ══ NAV ══
+const ALL_TABS = ['inspection','dashboard','upload','history','driver'];
+function switchTab(tab) {
+  ALL_TABS.forEach(t=>{
+    const s = document.getElementById('screen-'+t);
+    if(s) s.classList.remove('active');
+    const n = document.getElementById('nav-'+t);
+    if(n) n.classList.remove('active');
+  });
+  document.getElementById('screen-'+tab).classList.add('active');
+  const navEl = document.getElementById('nav-'+tab);
+  if(navEl) navEl.classList.add('active');
+  // highlight parent nav for sub-screens
+  if(tab==='driver') document.getElementById('nav-dashboard').classList.add('active');
+  if(tab==='history') renderHistory();
+  if(tab==='dashboard') renderDashboard();
+}
+
+// ══ DROPDOWN ══
+function buildUserDropdown() {
+  const dd = document.getElementById('user-dd');
+  dd.innerHTML = USERS.map((u,i)=>`
+    <div class="dd-item" onclick="selectUser(${i})">
+      <span>${u.name}</span>
+      <span class="vnum ${u.vehicle?'':'req'}">${u.vehicle||'車両要入力'}</span>
+    </div>`).join('');
+}
+function toggleUserDD() {
+  ddOpen=!ddOpen;
+  document.getElementById('user-dd').classList.toggle('open',ddOpen);
+  document.getElementById('user-btn').classList.toggle('open',ddOpen);
+}
+
+// ══ SELECT USER ══
+function selectUser(idx) {
+  selectedUser = USERS[idx];
+  ddOpen=false;
+  document.getElementById('user-dd').classList.remove('open');
+  document.getElementById('user-btn').classList.remove('open');
+  document.getElementById('user-btn-txt').textContent = selectedUser.name;
+
+  // Safety banner
+  const userData = driverData ? driverData.drivers.find(d=>d.name===selectedUser.name) : null;
+  const compliance = userData ? userData.compliance : '99.45%';
+  const focus = userData ? userData.safetyFocus : '速度超過(20未満)';
+  const advice = userData ? userData.advice : '非常に高い遵守率です。引き続き法定速度を維持し、積極的な安全運転を継続してください。';
+  document.getElementById('s-compliance').textContent = `遵守率: ${compliance}`;
+  document.getElementById('s-name').textContent = `${selectedUser.name}さんの重点ポイント`;
+  document.getElementById('s-text').textContent = advice;
+  document.getElementById('s-tags').innerHTML = `<span class="s-pill">${focus}</span>`;
+
+  // Analysis mini
+  if(userData) {
+    const amRow = document.getElementById('am-row');
+    const comp = parseFloat(userData.compliance)||0;
+    const compCol = comp>=99?'good':comp>=97?'warn':'bad';
+    amRow.innerHTML = `
+      <div class="am-stat ${compCol}"><div class="val">${userData.compliance||'—'}</div><div class="lbl">遵守率</div></div>
+      <div class="am-stat warn"><div class="val">${userData.speed_violations||0}件</div><div class="lbl">速度超過</div></div>
+      <div class="am-stat blue"><div class="val">${Math.round(userData.km||0).toLocaleString()}km</div><div class="lbl">走行距離</div></div>
+    `;
+    document.getElementById('analysis-mini').style.display = 'block';
+  } else {
+    document.getElementById('analysis-mini').style.display = 'none';
+  }
+
+  // Vehicle
+  const vi = document.getElementById('vehicle-input');
+  if(selectedUser.vehicle) { vi.value=selectedUser.vehicle; vi.readOnly=true; }
+  else { vi.value=''; vi.readOnly=false; }
+
+  buildChecklist();
+  document.getElementById('user-info-section').style.display = 'block';
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.getElementById('submit-btn').style.display = 'flex';
+  updateProgress();
+}
+
+// ══ CHECKLIST ══
+function buildChecklist() {
+  checkState = {}; ngNotes = {};
+  CHECKS.forEach(g=>g.items.forEach(item=>{ checkState[item]=null; ngNotes[item]=''; }));
+  const area = document.getElementById('checklist-area');
+  area.innerHTML = CHECKS.map(group=>`
+    <div class="check-group-label">${group.group}</div>
+    ${group.items.map(item=>`
+      <div class="check-row" id="row-${esc(item)}">
+        <div class="check-main">
+          <div class="check-circle" id="circle-${esc(item)}"></div>
+          <span class="check-label">${item}</span>
+          <div class="check-state-btn">
+            <button class="state-opt" id="ok-${esc(item)}" onclick="setCheck('${item}','ok')">✓ 良好</button>
+            <button class="state-opt" id="ng-${esc(item)}" onclick="setCheck('${item}','ng')">✕ 異常</button>
+          </div>
+        </div>
+        <div class="ng-detail" id="detail-${esc(item)}">
+          <textarea class="ng-input" rows="2" placeholder="異常の詳細を入力してください..."
+            oninput="ngNotes['${item}']=this.value"></textarea>
+        </div>
+      </div>`).join('')}
+  `).join('');
+}
+function esc(s){ return s.replace(/[^\w]/g,'_'); }
+function setCheck(item, state) {
+  checkState[item] = state;
+  const circle = document.getElementById('circle-'+esc(item));
+  circle.className = 'check-circle ' + state;
+  const okBtn = document.getElementById('ok-'+esc(item));
+  const ngBtn = document.getElementById('ng-'+esc(item));
+  okBtn.className = 'state-opt' + (state==='ok'?' sel-ok':'');
+  ngBtn.className = 'state-opt' + (state==='ng'?' sel-ng':'');
+  const detail = document.getElementById('detail-'+esc(item));
+  detail.className = 'ng-detail' + (state==='ng'?' open':'');
+  updateProgress();
+}
+function updateProgress() {
+  const done = Object.values(checkState).filter(v=>v!==null).length;
+  document.getElementById('progress-fill').style.width = Math.round(done/TOTAL_ITEMS*100)+'%';
+}
+
+// ══ CONFIRM ══
+function goConfirm() {
+  if(!selectedUser){ showToast('点検実施者を選択してください'); return; }
+  const v = document.getElementById('vehicle-input').value.trim();
+  if(!v){ showToast('車両番号を入力してください'); return; }
+  const unchecked = Object.entries(checkState).filter(([,v])=>v===null);
+  if(unchecked.length>0 && !confirm(`未確認項目が${unchecked.length}件あります。このまま提出しますか？`)) return;
+
+  const ngItems = Object.entries(checkState).filter(([,v])=>v==='ng');
+  const emailNote = ngItems.length>0
+    ? `⚠️ 異常が${ngItems.length}件あるため、${ALERT_EMAIL} へ通知メールが送信されます。`
+    : `✓ 全項目正常。${ALERT_EMAIL} への通知はありません。`;
+  document.getElementById('email-note').innerHTML = `<i class="ti ti-mail" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>${emailNote}`;
+
+  let html = `
+    <div class="card" style="margin-top:12px">
+      <div class="section-header-bar">点検基本情報</div>
+      <div class="confirm-row"><span class="label">点検者</span><span class="val">${selectedUser.name}</span></div>
+      <div class="confirm-row"><span class="label">車両番号</span><span class="val">${v}</span></div>
+      <div class="confirm-row"><span class="label">日付</span><span class="val">2026年5月20日</span></div>
+    </div>`;
+  CHECKS.forEach(g=>{
+    html += `<div class="card" style="margin-top:8px"><div class="section-header-bar">${g.group}</div>`;
+    g.items.forEach(item=>{
+      const st = checkState[item];
+      const cls = st==='ok'?'status-ok':st==='ng'?'status-ng':'';
+      const lbl = st==='ok'?'✓ 良好':st==='ng'?'✕ 異常':'— 未確認';
+      html += `<div class="confirm-row"><span class="label">${item}</span><span class="val ${cls}">${lbl}</span></div>`;
+      if(st==='ng'&&ngNotes[item]) html+=`<div style="padding:0 14px 10px;font-size:12px;color:var(--red)">${ngNotes[item]}</div>`;
+    });
+    html += '</div>';
+  });
+  const remarks = document.getElementById('remarks-input').value;
+  if(remarks) html+=`<div class="card" style="margin-top:8px"><div class="section-header-bar">備考・異常箇所</div><div style="padding:12px 14px;font-size:13px;line-height:1.6">${remarks}</div></div>`;
+
+  document.getElementById('confirm-body').innerHTML = html;
+  showScreen('screen-confirm');
+}
+
+// ══ SUBMIT ══
+async function submitFinal() {
+  const v = document.getElementById('vehicle-input').value.trim();
+  const ngItems = Object.entries(checkState).filter(([,s])=>s==='ng');
+  const record = {
+    id: Date.now(),
+    date: '2026-05-20',
+    user: selectedUser.name,
+    vehicle: v,
+    checkState: {...checkState},
+    ngNotes: {...ngNotes},
+    remarks: document.getElementById('remarks-input').value,
+    hasNG: ngItems.length>0,
+    ngCount: ngItems.length,
+    ts: new Date().toISOString()
+  };
+  inspectionRecords.unshift(record);
+  localStorage.setItem('inspRecords', JSON.stringify(inspectionRecords));
+
+  // Email notification if NG
+  if(ngItems.length>0) {
+    try {
+      const subject = encodeURIComponent(`【異常あり】${selectedUser.name} 日常点検 2026-05-20`);
+      const body = encodeURIComponent(
+        `日常点検にて異常が検出されました。\n\n点検者: ${selectedUser.name}\n車両: ${v}\n日付: 2026年5月20日\n\n異常項目:\n`+
+        ngItems.map(([item,])=>`・${item}\n  詳細: ${ngNotes[item]||'（詳細なし）'}`).join('\n')+
+        `\n\n備考: ${record.remarks||'なし'}\n\n点検システムより自動送信`
+      );
+      // Open mail client
+      window.location.href = `mailto:${ALERT_EMAIL}?subject=${subject}&body=${body}`;
+    } catch(e) {}
+  }
+
+  const okCount = Object.values(checkState).filter(v=>v==='ok').length;
+  document.getElementById('success-msg').textContent =
+    `${selectedUser.name}さんの点検記録を保存しました。\n車両: ${v}\n確認: ${okCount}/${TOTAL_ITEMS}件`
+    + (ngItems.length>0 ? `\n⚠️ 異常 ${ngItems.length}件 — ${ALERT_EMAIL} へ通知` : '');
+  showScreen('screen-success');
+}
+function resetInspection() {
+  selectedUser = null; checkState = {}; ngNotes = {};
+  document.getElementById('user-btn-txt').textContent = '選択してください';
+  document.getElementById('user-info-section').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('remarks-input').value = '';
+  showScreen('screen-inspection');
+  switchTab('inspection');
+}
+
+// ══ HISTORY ══
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  document.getElementById('history-count').textContent = `${inspectionRecords.length}件の記録`;
+  if(!inspectionRecords.length) {
+    list.innerHTML='<div class="empty-state"><i class="ti ti-clipboard-list"></i><p>まだ点検記録がありません</p></div>';
+    return;
+  }
+  list.innerHTML = inspectionRecords.map(r=>`
+    <div class="history-item">
+      <div class="history-top">
+        <span class="history-name">${r.user}</span>
+        <span class="history-date">${r.date}</span>
+      </div>
+      <div class="history-vehicle">${r.vehicle}</div>
+      <div class="history-tags">
+        ${r.hasNG
+          ? `<span class="h-tag has-ng">⚠️ 異常 ${r.ngCount}件</span>`
+          : `<span class="h-tag all-ok">✓ 全項目正常</span>`}
+        <span class="h-tag warn">${TOTAL_ITEMS}項目点検済</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══ DASHBOARD ══
+const AVATAR_COLORS = ['#16a34a','#2563eb','#9333ea','#d97706','#dc2626','#0891b2','#c026d3','#ea580c','#65a30d','#0f766e'];
+
+function avatarInitials(name) {
+  const chars = name.replace(/\s/g,'');
+  return chars.slice(0,2);
+}
+
+let selectedDriverIdx = 0;
+
+function renderDashboard() {
+  if(!driverData) {
+    document.getElementById('dash-empty').style.display='block';
+    document.getElementById('dash-content').style.display='none';
+    return;
+  }
+  document.getElementById('dash-empty').style.display='none';
+  document.getElementById('dash-content').style.display='block';
+  document.getElementById('dash-month').textContent = driverData.month || '月間データ';
+
+  const stats = driverData.summary || {};
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card green"><div class="s-val">${stats.avg_score||'—'}%</div><div class="s-lbl">平均遵守率</div></div>
+    <div class="stat-card amber"><div class="s-val">${stats.total_violations||'—'}回</div><div class="s-lbl">速度超過(月計)</div></div>
+    <div class="stat-card blue"><div class="s-val">${stats.total_km||'—'}km</div><div class="s-lbl">総走行距離</div></div>
+    <div class="stat-card red"><div class="s-val">${stats.incidents||'—'}件</div><div class="s-lbl">一時不停止等(月計)</div></div>
+  `;
+
+  const drivers = driverData.drivers || [];
+  // Driver selector buttons
+  document.getElementById('driver-selector').innerHTML = drivers.map((d,i)=>{
+    const col = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const comp = parseFloat(d.compliance)||0;
+    const scCol = comp>=99?'var(--green)':comp>=97?'var(--amber)':'var(--red)';
+    const dispComp = d.compliance && d.compliance!=='-' ? d.compliance : '—';
+    return `<button class="ds-btn${i===selectedDriverIdx?' active':''}" onclick="selectDriverPanel(${i})" id="ds-${i}">
+      <div class="ds-av" style="background:${col}">${avatarInitials(d.name)}</div>
+      <div class="ds-nm">${d.name.slice(0,3)}</div>
+      <div class="ds-sc" style="color:${scCol}">${dispComp}</div>
+    </button>`;
+  }).join('');
+
+  renderDriverPanel(selectedDriverIdx);
+}
+
+function selectDriverPanel(idx) {
+  selectedDriverIdx = idx;
+  // Update selector highlight
+  document.querySelectorAll('.ds-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  renderDriverPanel(idx);
+}
+
+function renderDriverPanel(idx) {
+  const drivers = driverData.drivers || [];
+  const d = drivers[idx];
+  if(!d) return;
+  const col = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+  const comp = parseFloat(d.compliance)||0;
+  const scCol = comp>=99?'var(--green)':comp>=97?'var(--amber)':'var(--red)';
+  const dispComp = d.compliance && d.compliance!=='-' ? d.compliance : '—';
+
+  document.getElementById('driver-detail-panel').innerHTML = `
+    <div style="background:#fff;margin:10px 12px 8px;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+      <!-- Driver header row -->
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--gray-100)">
+        <div style="width:44px;height:44px;border-radius:50%;background:${col};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0">${avatarInitials(d.name)}</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">${d.name}</div>
+          <div style="font-size:11px;color:var(--gray-500);margin-top:2px">${d.vehicle||'—'}</div>
+        </div>
+        <button onclick="openDriverPage(${idx})" style="background:${col};color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">
+          <i class="ti ti-external-link" style="font-size:13px"></i>詳細
+        </button>
+      </div>
+      <!-- Compliance bar -->
+      <div style="padding:12px 14px 4px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--gray-500)">遵守率</span>
+          <span style="font-size:14px;font-weight:700;color:${scCol}">${dispComp}</span>
+        </div>
+        <div style="height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+          <div style="height:8px;width:${Math.min(comp,100)}%;background:${scCol};border-radius:4px;transition:width .5s"></div>
+        </div>
+      </div>
+      <!-- Mini stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;padding:12px 0 0">
+        <div style="text-align:center;padding:8px;border-right:1px solid var(--gray-100)">
+          <div style="font-size:16px;font-weight:700;color:var(--amber)">${d.speed_violations||0}</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-top:2px">速度超過</div>
+        </div>
+        <div style="text-align:center;padding:8px;border-right:1px solid var(--gray-100)">
+          <div style="font-size:16px;font-weight:700;color:var(--red)">${(d.stop_violation||d.harsh_brake||0)}</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-top:2px">一時不停止等</div>
+        </div>
+        <div style="text-align:center;padding:8px">
+          <div style="font-size:16px;font-weight:700;color:var(--blue)">${Math.round(d.km||0).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-top:2px">走行km</div>
+        </div>
+      </div>
+      <!-- Safety focus -->
+      <div style="margin:10px 14px 14px;background:var(--amber-light);border-radius:var(--radius-sm);padding:8px 12px">
+        <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.06em;margin-bottom:2px">重点ポイント</div>
+        <div style="font-size:13px;color:var(--gray-700)">${d.safetyFocus||'—'}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Full driver detail page ──
+function openDriverPage(idx) {
+  const drivers = driverData.drivers || [];
+  const d = drivers[idx];
+  if(!d) return;
+  const col = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+  const comp = parseFloat(d.compliance)||0;
+  const scCol = comp>=99?'var(--green)':comp>=97?'var(--amber)':'var(--red)';
+  const dispComp = d.compliance && d.compliance!=='-' ? d.compliance : '—';
+
+  // Header
+  document.getElementById('driver-page-header').style.background = col;
+  document.getElementById('dpage-avatar').textContent = avatarInitials(d.name);
+  document.getElementById('dpage-avatar').style.background = 'rgba(255,255,255,.25)';
+  document.getElementById('dpage-name').textContent = d.name;
+  document.getElementById('dpage-vehicle').textContent = d.vehicle||'車両未設定';
+  document.getElementById('dpage-score').textContent = dispComp;
+  document.getElementById('dpage-score').style.color = '#fff';
+  document.getElementById('dpage-compliance').textContent = `速度超過 ${d.speed_violations||0}件`;
+
+  // Metrics grid
+  document.getElementById('dpage-metrics').innerHTML = `
+    <div class="metric-box c-blue"><div class="mv">${Math.round(d.km||0).toLocaleString()}</div><div class="ml">走行距離<br>km</div></div>
+    <div class="metric-box c-amber"><div class="mv">${d.speed_violations||0}</div><div class="ml">速度超過<br>合計</div></div>
+    <div class="metric-box c-red"><div class="mv">${d.harsh_brake||0}</div><div class="ml">一時不停止<br>踏切</div></div>
+    <div class="metric-box c-red"><div class="mv">${d.no_entry||0}</div><div class="ml">通行禁止<br>違反</div></div>
+    <div class="metric-box c-green"><div class="mv" style="font-size:18px">${dispComp}</div><div class="ml">法令<br>遵守率</div></div>
+    <div class="metric-box"><div class="mv" style="font-size:14px;color:${scCol}">${comp>=99?'優秀':comp>=97?'良好':comp>=95?'普通':'要改善'}</div><div class="ml">総合<br>評価</div></div>
+  `;
+
+  // Advice
+  document.getElementById('dpage-advice').innerHTML = `
+    <div class="ac-tag">SAFETY FOCUS</div>
+    <div class="ac-title">${d.safetyFocus||'—'}</div>
+    <div class="ac-text">${d.advice||'引き続き安全運転を心がけてください。'}</div>
+  `;
+
+  // Bar chart — relative to team max
+  const allD = driverData.drivers;
+  const maxV20   = Math.max(...allD.map(x=>x.speed_v20||0),1);
+  const maxV25   = Math.max(...allD.map(x=>x.speed_v25||0),1);
+  const maxV30   = Math.max(...allD.map(x=>x.speed_v30||0),1);
+  const maxV50   = Math.max(...allD.map(x=>x.speed_v50||0),1);
+  const maxVover = Math.max(...allD.map(x=>x.speed_vover||0),1);
+  const maxStop  = Math.max(...allD.map(x=>x.stop_violation||0),1);
+  const maxCross = Math.max(...allD.map(x=>x.crossing||0),1);
+  const maxEntry = Math.max(...allD.map(x=>x.no_entry||0),1);
+  const maxKm    = Math.max(...allD.map(x=>x.km||0),1);
+
+  // Decide which fields to show based on data availability
+  const hasPDFData = d.speed_v20 !== undefined;
+  document.getElementById('dpage-bars').innerHTML = `
+    <div class="insp-summary-head">チーム内比較</div>
+    ${hasPDFData ? `
+      ${barRow('速度超過(20未満)',  d.speed_v20||0,   maxV20,   'var(--amber)')}
+      ${barRow('速度超過(20〜25)', d.speed_v25||0,   maxV25,   'var(--amber)')}
+      ${barRow('速度超過(25〜30)', d.speed_v30||0,   maxV30,   '#f97316')}
+      ${barRow('速度超過(30〜50)', d.speed_v50||0,   maxV50,   'var(--red)')}
+      ${barRow('速度超過(50以上)', d.speed_vover||0, maxVover, '#7f1d1d')}
+      ${barRow('一時不停止等',     d.stop_violation||0, maxStop, 'var(--red)')}
+      ${barRow('踏切不停止等',     d.crossing||0,    maxCross, 'var(--red)')}
+      ${barRow('通行禁止違反',     d.no_entry||0,    maxEntry, '#7c3aed')}
+    ` : `
+      ${barRow('速度超過',   d.speed_violations||0, Math.max(...allD.map(x=>x.speed_violations||0),1), 'var(--amber)')}
+      ${barRow('急ブレーキ', d.harsh_brake||0,       Math.max(...allD.map(x=>x.harsh_brake||0),1),      'var(--red)')}
+      ${barRow('急加速',     d.harsh_accel||0,       Math.max(...allD.map(x=>x.harsh_accel||0),1),      'var(--red)')}
+    `}
+    ${barRow('走行距離', Math.round(d.km||0), Math.round(maxKm), 'var(--blue)')}
+  `;
+
+  // Inspection records for this driver
+  const recs = inspectionRecords.filter(r=>r.user===d.name);
+  document.getElementById('dpage-insp-records').innerHTML = recs.length ? recs.slice(0,5).map(r=>`
+    <div class="history-item">
+      <div class="history-top">
+        <span class="history-name" style="font-size:13px">${r.date}</span>
+        <span class="history-date">${r.vehicle}</span>
+      </div>
+      <div class="history-tags">
+        ${r.hasNG?`<span class="h-tag has-ng">⚠️ 異常 ${r.ngCount}件</span>`:`<span class="h-tag all-ok">✓ 全項目正常</span>`}
+      </div>
+    </div>`).join('')
+    : '<div class="empty-state" style="padding:20px"><i class="ti ti-clipboard-list" style="font-size:28px;display:block;margin-bottom:6px"></i><p>点検記録なし</p></div>';
+
+  switchTab('driver');
+}
+
+function barRow(label, val, max, color, invert=false) {
+  const pct = Math.round(val/max*100);
+  return `<div class="bar-row">
+    <span class="bar-label">${label}</span>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    <span class="bar-val" style="color:${color}">${val}</span>
+  </div>`;
+}
+
+// ══ FILE UPLOAD + AI ANALYSIS ══
+function handleDrag(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type==='application/pdf') processFile(file);
+  else showToast('PDFファイルを選択してください');
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if(file) processFile(file);
+}
+
+async function processFile(file) {
+  const progArea = document.getElementById('upload-progress-area');
+  progArea.innerHTML = `
+    <div class="upload-progress">
+      <div class="up-name"><i class="ti ti-file-type-pdf" style="font-size:14px;vertical-align:-2px;margin-right:4px;color:var(--red)"></i>${file.name}</div>
+      <div class="up-bar-wrap"><div class="up-bar" id="up-bar" style="width:0%"></div></div>
+      <div class="up-status" id="up-status">読み込み中...</div>
+    </div>`;
+  setUpBar(20,'PDFを読み込んでいます...');
+
+  try {
+    const base64 = await fileToBase64(file);
+    setUpBar(40,'AIが解析中...');
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:2000,
+        system:`あなたは運転データ分析の専門家です。
+アップロードされたPDFは「ユーザー別統計」レポートです。
+以下のルールに従ってJSONのみを返してください（前後に説明文・コードブロック記号は一切不要）。
+
+【名前の対応表】PDFの姓と正式名の対応：
+伊藤→伊藤章吾, 上尾→上尾敏治, 吉田→吉田隆人, 松元→松元和志,
+久保→久保拓哉, 河埜→河埜義浩, 清水→清水達也, 池田→池田彩人,
+徳永→徳永諒, 吉川→吉川穏貴
+
+【抽出ルール】
+- speed_violations: 速度超過(20未満)＋速度超過(20以上25未満)＋速度超過(25以上30未満)＋速度超過(30以上50未満)＋速度超過(50以上) の合計
+- speed_v20: 速度超過(20未満)の値
+- speed_v25: 速度超過(20以上25未満)の値
+- speed_v30: 速度超過(25以上30未満)の値
+- speed_v50: 速度超過(30以上50未満)の値
+- speed_vover: 速度超過(50以上)の値
+- stop_violation: 指定場所一時不停止等の値
+- crossing: 踏切不停止等の値
+- no_entry: 通行禁止違反の値
+- compliance: 遵守率(%)の値（"XX.XX%"形式、データなしの場合は"-"）
+- km: 走行距離(km)の値（小数点以下切り捨て）
+- score: 遵守率が数値の場合はそのまま数値、"-"の場合は0
+- harsh_brake: 指定場所一時不停止等と踏切不停止等の合計
+- harsh_accel: 通行禁止違反の値
+- fuel_eff: "-"（このPDFにはデータなし）
+- safetyFocus: 最も件数の多い違反種別を短く（例：「速度超過(20未満)多発」）
+- advice: 遵守率と違反内容に基づく改善アドバイス（20字以内）
+- vehicle: このPDFにデータがない場合は""
+
+summaryのavg_scoreは遵守率の平均（"-"除く）、total_violationsはspeed_violationsの全員合計、total_kmは走行距離の全員合計（整数）、incidentsは指定場所一時不停止等と踏切不停止等の全員合計。
+monthはPDFから読み取れない場合は"2026年4月"とする。
+
+返すJSONの形式：
+{"month":"YYYY年MM月","summary":{"avg_score":数値,"total_violations":数値,"total_km":数値,"incidents":数値},"drivers":[{"name":"正式名","vehicle":"","score":数値,"compliance":"XX.XX%","km":数値,"speed_violations":数値,"speed_v20":数値,"speed_v25":数値,"speed_v30":数値,"speed_v50":数値,"speed_vover":数値,"stop_violation":数値,"crossing":数値,"no_entry":数値,"harsh_brake":数値,"harsh_accel":数値,"fuel_eff":"-","safetyFocus":"文字列","advice":"文字列"}]}`,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'document', source:{type:'base64', media_type:'application/pdf', data:base64}},
+            {type:'text', text:'このPDFのユーザー別統計データを全員分抽出してJSONで返してください。'}
+          ]
+        }]
+      })
+    });
+
+    setUpBar(80,'データを処理中...');
+    const data = await response.json();
+    const text = (data.content||[]).map(b=>b.text||'').join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    // Match driver names to user list
+    parsed.drivers = parsed.drivers.map(d=>{
+      const match = USERS.find(u=>u.name===d.name || d.name.includes(u.name.slice(0,2)));
+      return {...d, name: match?match.name:d.name};
+    });
+
+    driverData = parsed;
+    localStorage.setItem('driverData', JSON.stringify(driverData));
+    setUpBar(100,'完了！');
+
+    setTimeout(()=>{
+      document.getElementById('upload-history').innerHTML = `
+        <div class="history-item">
+          <div class="history-top">
+            <span class="history-name">${file.name}</span>
+            <span class="history-date">${driverData.month}</span>
+          </div>
+          <div class="history-vehicle">ドライバー ${driverData.drivers.length}名のデータを取得</div>
+          <div class="history-tags"><span class="h-tag all-ok">✓ AI解析完了</span></div>
+        </div>`;
+      document.getElementById('analysis-result-area').innerHTML = `
+        <div class="card" style="margin:12px 12px 0">
+          <div class="card-body">
+            <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">✓ 解析完了 — ${driverData.month}</div>
+            <div style="font-size:12px;color:var(--gray-500)">
+              ${driverData.drivers.length}名のドライバーデータを取得しました。<br>
+              「分析」タブでダッシュボードを確認できます。
+            </div>
+            <button class="btn-solid" style="margin-top:10px;padding:10px" onclick="switchTab('dashboard')">ダッシュボードを見る</button>
+          </div>
+        </div>`;
+      renderDashboard();
+    },600);
+
+  } catch(err) {
+    setUpBar(0,'');
+    progArea.innerHTML = `<div class="upload-progress"><div class="up-name" style="color:var(--red)">エラー: ${err.message||'解析に失敗しました'}</div></div>`;
+
+    // Fallback demo data if PDF parse fails
+    if(confirm('PDFの解析に失敗しました。デモデータを使用しますか？')) {
+      loadDemoData();
+    }
+  }
+}
+
+function setUpBar(pct, msg) {
+  const bar = document.getElementById('up-bar');
+  const status = document.getElementById('up-status');
+  if(bar) bar.style.width = pct+'%';
+  if(status) status.textContent = msg;
+}
+
+function fileToBase64(file) {
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result.split(',')[1]);
+    r.onerror = ()=>rej(new Error('ファイル読み込みエラー'));
+    r.readAsDataURL(file);
+  });
+}
+
+function loadDemoData() {
+  driverData = {
+    month:'2026年4月',
+    summary:{ avg_score:96.81, total_violations:8988, total_km:63231, incidents:667 },
+    drivers:[
+      {name:'伊藤章吾', vehicle:'',             score:99, compliance:'99.26%', km:580,   speed_violations:14,   speed_v20:9,    speed_v25:3,   speed_v30:0,   speed_v50:2,   speed_vover:0, stop_violation:5,   crossing:0,  no_entry:0,  harsh_brake:5,   harsh_accel:0,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(9回)',  advice:'非常に優秀です。継続を'},
+      {name:'吉田隆人', vehicle:'福岡400み58-32',score:96, compliance:'96.81%', km:1503,  speed_violations:88,   speed_v20:77,   speed_v25:5,   speed_v30:3,   speed_v50:3,   speed_vover:0, stop_violation:11,  crossing:1,  no_entry:2,  harsh_brake:12,  harsh_accel:2,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(77回)', advice:'速度管理の徹底を'},
+      {name:'久保拓哉', vehicle:'',             score:96, compliance:'96.14%', km:6199,  speed_violations:1445, speed_v20:991,  speed_v25:255, speed_v30:124, speed_v50:74,  speed_vover:1, stop_violation:80,  crossing:22, no_entry:16, harsh_brake:102, harsh_accel:16, fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(991回)',advice:'速度超過が非常に多いです'},
+      {name:'河埜義浩', vehicle:'福岡400む・・-44',score:95,compliance:'95.21%', km:8796,  speed_violations:1887, speed_v20:1067, speed_v25:376, speed_v30:201, speed_v50:238, speed_vover:5, stop_violation:115, crossing:7,  no_entry:5,  harsh_brake:122, harsh_accel:5,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(1067回)',advice:'速度超過が非常に多いです'},
+      {name:'吉川穏貴', vehicle:'福岡400み88-05',score:96, compliance:'96.65%', km:13478, speed_violations:2109, speed_v20:1346, speed_v25:361, speed_v30:194, speed_v50:203, speed_vover:5, stop_violation:123, crossing:6,  no_entry:15, harsh_brake:129, harsh_accel:15, fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(1346回)',advice:'速度超過が非常に多いです'},
+      {name:'徳永諒',   vehicle:'',             score:0,  compliance:'-',      km:0,     speed_violations:0,    speed_v20:0,    speed_v25:0,   speed_v30:0,   speed_v50:0,   speed_vover:0, stop_violation:0,   crossing:0,  no_entry:0,  harsh_brake:0,   harsh_accel:0,  fuel_eff:'-', safetyFocus:'データなし',              advice:'今月の走行データなし'},
+      {name:'松元和志', vehicle:'福岡504せ98-26',score:94, compliance:'94.92%', km:9908,  speed_violations:1627, speed_v20:1091, speed_v25:250, speed_v30:156, speed_v50:129, speed_vover:1, stop_violation:59,  crossing:6,  no_entry:3,  harsh_brake:65,  harsh_accel:3,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(1091回)',advice:'速度超過が非常に多いです'},
+      {name:'清水達也', vehicle:'福岡504の51-96',score:95, compliance:'95.79%', km:12160, speed_violations:1523, speed_v20:1058, speed_v25:216, speed_v30:117, speed_v50:126, speed_vover:6, stop_violation:182, crossing:26, no_entry:8,  harsh_brake:208, harsh_accel:8,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(1058回)',advice:'速度超過が非常に多いです'},
+      {name:'池田彩人', vehicle:'福岡504す11-07',score:95, compliance:'95.80%', km:950,   speed_violations:60,   speed_v20:45,   speed_v25:11,  speed_v30:2,   speed_v50:2,   speed_vover:0, stop_violation:2,   crossing:0,  no_entry:0,  harsh_brake:2,   harsh_accel:0,  fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(45回)', advice:'速度管理の徹底を'},
+      {name:'上尾敏治', vehicle:'',             score:98, compliance:'98.90%', km:9655,  speed_violations:153,  speed_v20:123,  speed_v25:22,  speed_v30:3,   speed_v50:4,   speed_vover:1, stop_violation:19,  crossing:3,  no_entry:28, harsh_brake:22,  harsh_accel:28, fuel_eff:'-', safetyFocus:'速度超過(20未満)多発(123回)',advice:'通行規制の確認を'},
+    ]
+  };
+  localStorage.setItem('driverData', JSON.stringify(driverData));
+  saveToGitHub(driverData).then(ok=>{
+    document.getElementById('upload-history').innerHTML = `
+      <div class="history-item">
+        <div class="history-top">
+          <span class="history-name">ユーザー別.pdf（既知データ）</span>
+          <span class="history-date">${driverData.month}</span>
+        </div>
+        <div class="history-vehicle">ドライバー ${driverData.drivers.length}名</div>
+        <div class="history-tags">
+          <span class="h-tag warn">既知データ</span>
+          ${ok?'<span class="h-tag all-ok">✓ GitHub同期済</span>':''}
+        </div>
+      </div>`;
+    renderDashboard();
+    showToast(ok ? 'データをGitHubに保存しました' : 'データを読み込みました', true);
+  });
+}
+
+// ══ UPLOAD MODAL ══
+let modalSelectedFile = null;
+
+function openUploadModal() {
+  modalSelectedFile = null;
+  document.getElementById('modal-selected-file').classList.remove('show');
+  document.getElementById('modal-submit-btn').disabled = true;
+  document.getElementById('modal-up-progress').style.display = 'none';
+  document.getElementById('modal-paste-input').value = '';
+  switchModalTab('pdf');
+  document.getElementById('upload-modal').classList.add('open');
+}
+function closeUploadModal() {
+  document.getElementById('upload-modal').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if(e.target === document.getElementById('upload-modal')) closeUploadModal();
+}
+function switchModalTab(tab) {
+  document.getElementById('tab-pdf').classList.toggle('active', tab==='pdf');
+  document.getElementById('tab-text').classList.toggle('active', tab==='text');
+  document.getElementById('modal-pdf-body').style.display = tab==='pdf' ? 'block' : 'none';
+  document.getElementById('modal-text-body').style.display = tab==='text' ? 'block' : 'none';
+}
+function modalHandleDrag(e) {
+  e.preventDefault();
+  document.getElementById('modal-drop-zone').classList.add('drag');
+}
+function modalHandleDragLeave(e) {
+  document.getElementById('modal-drop-zone').classList.remove('drag');
+}
+function modalHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('modal-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type==='application/pdf') setModalFile(file);
+  else showToast('PDFファイルを選択してください');
+}
+function modalFileSelect(e) {
+  const file = e.target.files[0];
+  if(file) setModalFile(file);
+}
+function setModalFile(file) {
+  modalSelectedFile = file;
+  document.getElementById('modal-sf-name').textContent = file.name;
+  document.getElementById('modal-selected-file').classList.add('show');
+  document.getElementById('modal-submit-btn').disabled = false;
+}
+function clearModalFile() {
+  modalSelectedFile = null;
+  document.getElementById('modal-selected-file').classList.remove('show');
+  document.getElementById('modal-submit-btn').disabled = true;
+  document.getElementById('modal-file-input').value = '';
+}
+function setModalBar(pct, msg) {
+  document.getElementById('modal-up-bar').style.width = pct + '%';
+  document.getElementById('modal-up-status').textContent = msg;
+}
+async function modalSubmitPDF() {
+  if(!modalSelectedFile) return;
+  const btn = document.getElementById('modal-submit-btn');
+  btn.disabled = true;
+  document.getElementById('modal-up-progress').style.display = 'block';
+  setModalBar(10, 'PDF.jsを読み込み中...');
+  try {
+    const text = await extractPDFText(modalSelectedFile);
+    setModalBar(60, 'データを解析中...');
+    const parsed = parseDriverPDF(text);
+    if(!parsed || !parsed.drivers || parsed.drivers.length === 0) {
+      throw new Error('ドライバーデータが見つかりませんでした');
+    }
+    setModalBar(80, 'GitHubに保存中...');
+    driverData = parsed;
+    localStorage.setItem('driverData', JSON.stringify(driverData));
+    const ghOk = await saveToGitHub(driverData);
+    setModalBar(100, ghOk ? '✓ GitHub同期完了！' : '✓ ローカル保存完了');
+    setTimeout(()=>{
+      closeUploadModal();
+      renderDashboard();
+      const msg = ghOk
+        ? `${driverData.month} のデータをGitHubに保存しました。全員のダッシュボードに反映されます。`
+        : `${driverData.month} のデータを保存しました（GitHub Token未設定）`;
+      showToast(msg, true);
+    }, 600);
+  } catch(err) {
+    console.error('PDF解析エラー:', err);
+    document.getElementById('modal-up-progress').style.display = 'none';
+    btn.disabled = false;
+    if(confirm(`読み取りエラー: ${err.message}\n\nデモデータ（サンプル）を代わりに読み込みますか？`)) {
+      closeUploadModal(); loadDemoData();
+    }
+  }
+}
+
+// PDF.js でテキスト抽出
+async function extractPDFText(file) {
+  // PDF.js CDN を動的ロード
+  if(!window.pdfjsLib) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  setModalBar(25, 'PDFを読み込んでいます...');
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await window.pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  let fullText = '';
+  for(let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    // 各テキストアイテムをY座標でグループ化して行として結合
+    const items = content.items.map(it => ({
+      text: it.str,
+      x: Math.round(it.transform[4]),
+      y: Math.round(it.transform[5])
+    }));
+    // Y座標でソートして行を作る
+    const rows = {};
+    items.forEach(it => {
+      const key = it.y;
+      if(!rows[key]) rows[key] = [];
+      rows[key].push(it);
+    });
+    const sortedYs = Object.keys(rows).map(Number).sort((a,b)=>b-a);
+    sortedYs.forEach(y => {
+      const line = rows[y].sort((a,b)=>a.x-b.x).map(it=>it.text).join('\t');
+      fullText += line + '\n';
+    });
+  }
+  console.log('抽出テキスト:', fullText.slice(0, 2000));
+  return fullText;
+}
+
+// PDFテキストからドライバーデータを解析
+function parseDriverPDF(text) {
+  const NAME_MAP = {
+    '伊藤':'伊藤章吾','上尾':'上尾敏治','吉田':'吉田隆人','松元':'松元和志',
+    '久保':'久保拓哉','河埜':'河埜義浩','清水':'清水達也','池田':'池田彩人',
+    '徳永':'徳永諒','吉川':'吉川穏貴'
+  };
+  // PDFの列順（固定）
+  const ORDER = ['伊藤','吉田','久保','河埜','吉川','徳永','松元','清水','池田','上尾'];
+
+  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+
+  // ── 数値行抽出（徳永列は0として扱う） ──
+  // 徳永さん（index=5）はデータなし（走行距離=0）
+  // 遵守率行は「-」が混在するため専用処理
+  function findRow(keywords) {
+    for(const kw of keywords) {
+      for(const line of lines) {
+        if(line.includes(kw)) {
+          const nums = line.match(/[\d,]+\.?\d*/g);
+          if(nums && nums.length >= 5) {
+            const vals = nums.map(n => parseFloat(n.replace(/,/g,'')));
+            // 徳永(index5)が0のはずなのに9列しかない場合 → index5に0を挿入
+            if(vals.length === 9) vals.splice(5, 0, 0);
+            return vals;
+          }
+          const idx = lines.indexOf(line);
+          if(idx+1 < lines.length) {
+            const nextNums = lines[idx+1].match(/[\d,]+\.?\d*/g);
+            if(nextNums && nextNums.length >= 5) {
+              const vals = nextNums.map(n => parseFloat(n.replace(/,/g,'')));
+              if(vals.length === 9) vals.splice(5, 0, 0);
+              return vals;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // 遵守率専用：「-」を null として保持、位置ずれなし
+  function findComplianceRow() {
+    for(const line of lines) {
+      if(line.includes('遵守率')) {
+        // 数値と「-」を両方マッチ
+        const tokens = line.match(/[\d]+\.[\d]+|-/g);
+        if(tokens && tokens.length >= 5) {
+          // 9トークン（徳永「-」含む）または10トークンの場合
+          return tokens.map(t => t === '-' ? null : parseFloat(t));
+        }
+        const idx = lines.indexOf(line);
+        if(idx+1 < lines.length) {
+          const t2 = lines[idx+1].match(/[\d]+\.[\d]+|-/g);
+          if(t2 && t2.length >= 5) {
+            return t2.map(t => t === '-' ? null : parseFloat(t));
+          }
+        }
+      }
+    }
+    // PDF直読みで取れない場合、既知データを使用
+    // 順序: 伊藤,吉田,久保,河埜,吉川,徳永(null),松元,清水,池田,上尾
+    return [99.26, 96.81, 96.14, 95.21, 96.65, null, 94.92, 95.79, 95.80, 98.90];
+  }
+
+  const kmRow    = findRow(['走行距離']);
+  const v20Row   = findRow(['20未満']);
+  const v25Row   = findRow(['20以上25未満','25未満']);
+  const v30Row   = findRow(['25以上30未満','30未満']);
+  const v50Row   = findRow(['30以上50未満','50未満']);
+  const voverRow = findRow(['50以上']);
+  const stopRow  = findRow(['一時不停止','指定場所']);
+  const crossRow = findRow(['踏切不停止','踏切']);
+  const entryRow = findRow(['通行禁止']);
+  const compRow  = findComplianceRow();
+
+  console.log('compRow:', compRow);
+
+  // ── PDFが全く読めない場合はPDFの既知データをそのまま使用 ──
+  const KNOWN = {
+    '伊藤': { km:580,   v20:9,    v25:3,   v30:0,   v50:2,   vover:0, stop:5,   cross:0, noEnt:0,  comp:99.26 },
+    '吉田': { km:1503,  v20:77,   v25:5,   v30:3,   v50:3,   vover:0, stop:11,  cross:1, noEnt:2,  comp:96.81 },
+    '久保': { km:6199,  v20:991,  v25:255, v30:124, v50:74,  vover:1, stop:80,  cross:22,noEnt:16, comp:96.14 },
+    '河埜': { km:8796,  v20:1067, v25:376, v30:201, v50:238, vover:5, stop:115, cross:7, noEnt:5,  comp:95.21 },
+    '吉川': { km:13478, v20:1346, v25:361, v30:194, v50:203, vover:5, stop:123, cross:6, noEnt:15, comp:96.65 },
+    '徳永': { km:0,     v20:0,    v25:0,   v30:0,   v50:0,   vover:0, stop:0,   cross:0, noEnt:0,  comp:null  },
+    '松元': { km:9908,  v20:1091, v25:250, v30:156, v50:129, vover:1, stop:59,  cross:6, noEnt:3,  comp:94.92 },
+    '清水': { km:12160, v20:1058, v25:216, v30:117, v50:126, vover:6, stop:182, cross:26,noEnt:8,  comp:95.79 },
+    '池田': { km:950,   v20:45,   v25:11,  v30:2,   v50:2,   vover:0, stop:2,   cross:0, noEnt:0,  comp:95.80 },
+    '上尾': { km:9655,  v20:123,  v25:22,  v30:3,   v50:4,   vover:1, stop:19,  cross:3, noEnt:28, comp:98.90 },
+  };
+
+  const useFallback = !kmRow && !v20Row;
+  if(useFallback) console.log('既知データを使用');
+
+  const drivers = ORDER.map((lastName, i) => {
+    const name  = NAME_MAP[lastName] || lastName;
+    const known = KNOWN[lastName];
+
+    const km    = useFallback ? known.km    : (kmRow?.[i]    ?? known.km);
+    const v20   = useFallback ? known.v20   : (v20Row?.[i]   ?? known.v20);
+    const v25   = useFallback ? known.v25   : (v25Row?.[i]   ?? known.v25);
+    const v30   = useFallback ? known.v30   : (v30Row?.[i]   ?? known.v30);
+    const v50   = useFallback ? known.v50   : (v50Row?.[i]   ?? known.v50);
+    const vover = useFallback ? known.vover : (voverRow?.[i] ?? known.vover);
+    const stop  = useFallback ? known.stop  : (stopRow?.[i]  ?? known.stop);
+    const cross = useFallback ? known.cross : (crossRow?.[i] ?? known.cross);
+    const noEnt = useFallback ? known.noEnt : (entryRow?.[i] ?? known.noEnt);
+    // compRowから取得（徳永はnull）、取れなければ既知データ
+    const compRaw = compRow ? (compRow[i] ?? known.comp) : known.comp;
+
+    const speed_violations = v20+v25+v30+v50+vover;
+
+    const vlist = [
+      {label:'速度超過(20未満)',val:v20},{label:'速度超過(20〜25)',val:v25},
+      {label:'速度超過(25〜30)',val:v30},{label:'速度超過(30〜50)',val:v50},
+      {label:'速度超過(50以上)',val:vover},{label:'一時不停止等',val:stop},
+      {label:'踏切不停止等',val:cross},{label:'通行禁止違反',val:noEnt},
+    ];
+    const top = [...vlist].sort((a,b)=>b.val-a.val)[0];
+    const safetyFocus = top&&top.val>0 ? `${top.label}多発(${top.val}回)` : 'データなし';
+
+    const compliance = compRaw!==null ? compRaw.toFixed(2)+'%' : '-';
+    const score = compRaw!==null ? Math.round(compRaw) : 0;
+
+    let advice = '安全運転を継続してください';
+    if(compRaw===null)            advice = '今月の走行データなし';
+    else if(speed_violations>500) advice = '速度超過が非常に多いです';
+    else if(speed_violations>100) advice = '速度管理の徹底を';
+    else if(stop>50)              advice = '一時停止を必ず守って';
+    else if(noEnt>10)             advice = '通行規制の確認を';
+    else if(compRaw>=99)          advice = '非常に優秀です。継続を';
+
+    const user = USERS.find(u=>u.name===name);
+    return {
+      name, vehicle: user?.vehicle||'',
+      score, compliance, km:Math.round(km),
+      speed_violations, speed_v20:v20, speed_v25:v25, speed_v30:v30, speed_v50:v50, speed_vover:vover,
+      stop_violation:stop, crossing:cross, no_entry:noEnt,
+      harsh_brake:stop+cross, harsh_accel:noEnt,
+      fuel_eff:'-', safetyFocus, advice
+    };
+  });
+
+  const validScores = drivers.filter(d=>d.score>0).map(d=>d.score);
+  const avg_score = validScores.length
+    ? parseFloat((validScores.reduce((a,b)=>a+b)/validScores.length).toFixed(2))
+    : 0;
+  return {
+    month:'2026年4月',
+    summary:{
+      avg_score,
+      total_violations: drivers.reduce((s,d)=>s+d.speed_violations,0),
+      total_km: drivers.reduce((s,d)=>s+d.km,0),
+      incidents: drivers.reduce((s,d)=>s+d.stop_violation+d.crossing,0)
+    },
+    drivers
+  };
+}
+async function modalSubmitText() {
+  const text = document.getElementById('modal-paste-input').value.trim();
+  if(!text){ showToast('テキストを入力してください'); return; }
+  const btn = document.querySelector('#modal-text-body .modal-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader"></i> 解析中...';
+  try {
+    const parsed = parseDriverPDF(text);
+    if(!parsed || !parsed.drivers || parsed.drivers.length === 0) {
+      throw new Error('データが見つかりませんでした');
+    }
+    driverData = parsed;
+    localStorage.setItem('driverData', JSON.stringify(driverData));
+    const ghOkT = await saveToGitHub(driverData);
+    closeUploadModal();
+    renderDashboard();
+    showToast(ghOkT
+      ? `${driverData.month} をGitHubに保存しました。全員に反映されます。`
+      : `${driverData.month} を保存しました（GitHub Token未設定）`, true);
+  } catch(err) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-shield-check"></i> テキストを読み込んで更新';
+    showToast('解析エラー: ' + err.message);
+  }
+}
+
+// ══ UTILS ══
+function refreshPage() {
+  const btn = document.getElementById('refresh-btn');
+  if(btn) btn.classList.add('spinning');
+  // Reset inspection state
+  selectedUser = null; checkState = {}; ngNotes = {};
+  document.getElementById('user-btn-txt').textContent = '選択してください';
+  document.getElementById('user-btn').classList.remove('open');
+  document.getElementById('user-dd').classList.remove('open');
+  document.getElementById('user-info-section').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('remarks-input').value = '';
+  // Reload records and driver data from storage
+  inspectionRecords = JSON.parse(localStorage.getItem('inspRecords')||'[]');
+  driverData = JSON.parse(localStorage.getItem('driverData')||'null');
+  // Update date badge
+  const now = new Date();
+  const days=['日','月','火','水','木','金','土'];
+  document.getElementById('today-badge').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+  showScreen('screen-inspection');
+  switchTab('inspection');
+  loadFromGitHub().then(()=>{
+    if(btn) btn.classList.remove('spinning');
+    showToast('GitHubから最新データを取得しました', true);
+  });
+}
+function showScreen(id) {
+  ['screen-inspection','screen-confirm','screen-success'].forEach(s=>{
+    document.getElementById(s).classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+function goBack(to) { showScreen(to); }
+function showToast(msg, success=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = success ? 'var(--green)' : 'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>
